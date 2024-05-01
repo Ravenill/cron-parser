@@ -15,7 +15,7 @@ public class Main {
             throw new IllegalArgumentException("Invalid arguments");
         }
 
-        Try.of(() -> cronParser.parseAndValidateDefinition(args[0]))
+        Try.of(() -> cronParser.parseDefinition(args[0]))
                 .onFailure(ex -> promptHelp())
                 .onSuccess(CronDefinition::printDefinition)
                 .get();

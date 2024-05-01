@@ -15,7 +15,7 @@ class CronParserTest {
         final String args = "* * * * * * * * command";
 
         // when then
-        assertThatThrownBy(() -> classUnderTest.parseAndValidateDefinition(args))
+        assertThatThrownBy(() -> classUnderTest.parseDefinition(args))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Unsupported argument count...");
     }
@@ -26,7 +26,7 @@ class CronParserTest {
         final String args = "* * * * * command";
 
         // when then
-        assertThatCode(() -> classUnderTest.parseAndValidateDefinition(args))
+        assertThatCode(() -> classUnderTest.parseDefinition(args))
                 .doesNotThrowAnyException();
     }
 }

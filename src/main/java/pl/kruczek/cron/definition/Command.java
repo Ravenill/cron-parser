@@ -6,14 +6,10 @@ class Command implements CronArgument {
     private final String command;
 
     Command(String command) {
-        this.command = command;
-    }
-
-    @Override
-    public void validate() {
         if (StringUtils.isBlank(command)) {
             throw new IllegalArgumentException("Command cannot be blank");
         }
+        this.command = command;
     }
 
     @Override

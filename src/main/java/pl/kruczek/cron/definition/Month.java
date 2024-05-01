@@ -5,11 +5,6 @@ class Month implements CronArgument {
     }
 
     @Override
-    public void validate() {
-
-    }
-
-    @Override
     public String preparePrint() {
         return "month\t\t";
     }

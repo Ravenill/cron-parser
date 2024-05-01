@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class CronDefinition {
+
+    // TODO: Refactor to LinkedList
     private final Minutes minutes;
     private final Hours hours;
     private final DayOfMonth dayOfMonth;
@@ -62,15 +64,7 @@ public class CronDefinition {
         }
     }
 
-    public void validateDefinition() {
-        minutes.validate();
-        hours.validate();
-        dayOfMonth.validate();
-        month.validate();
-        dayOfWeek.validate();
-        command.validate();
-    }
-
+    // TODO: Refactor to LinkedList.forEach
     public void printDefinition() {
         System.out.println(minutes.preparePrint());
         System.out.println(hours.preparePrint());

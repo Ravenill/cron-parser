@@ -14,7 +14,7 @@ class CommandTest {
         final String command = "";
 
         // when then
-        assertThatThrownBy(() -> new Command(command).validate())
+        assertThatThrownBy(() -> new Command(command))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Command cannot be blank");
     }
@@ -25,7 +25,7 @@ class CommandTest {
         final String command = "./test.exe";
 
         // when then
-        assertThatCode(() -> new Command(command).validate())
+        assertThatCode(() -> new Command(command))
                 .doesNotThrowAnyException();
     }
 

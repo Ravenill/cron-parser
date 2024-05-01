@@ -6,11 +6,6 @@ class DayOfWeek implements CronArgument {
     }
 
     @Override
-    public void validate() {
-
-    }
-
-    @Override
     public String preparePrint() {
         return "day of week\t\t";
     }

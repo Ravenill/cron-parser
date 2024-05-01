@@ -6,11 +6,6 @@ class Hours implements CronArgument {
     }
 
     @Override
-    public void validate() {
-
-    }
-
-    @Override
     public String preparePrint() {
         return "hour\t\t";
     }
