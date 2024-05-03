@@ -1,18 +1,13 @@
 package pl.kruczek.cron.definition;
 
+import io.vavr.collection.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class CronDefinition {
 
-    // TODO: Refactor to LinkedList
-    private final Minutes minutes;
-    private final Hours hours;
-    private final DayOfMonth dayOfMonth;
-    private final Months months;
-    private final DayOfWeek dayOfWeek;
-    private final Command command;
+    private final List<CronArgument> cronArguments;
 
     public static class CronDefinitionBuilder {
         private Minutes minutes;
@@ -54,23 +49,21 @@ public class CronDefinition {
 
         public CronDefinition build() {
             return new CronDefinition(
-                    minutes,
-                    hours,
-                    dayOfMonth,
-                    months,
-                    dayOfWeek,
-                    command
+                    List.of( // order of args is binding
+                            minutes,
+                            hours,
+                            dayOfMonth,
+                            months,
+                            dayOfWeek,
+                            command
+                    )
             );
         }
     }
 
-    // TODO: Refactor to LinkedList.forEach
     public void printDefinition() {
-        System.out.println(minutes.preparePrint());
-        System.out.println(hours.preparePrint());
-        System.out.println(dayOfMonth.preparePrint());
-        System.out.println(months.preparePrint());
-        System.out.println(dayOfWeek.preparePrint());
-        System.out.println(command.preparePrint());
+        cronArguments.forEach(
+                arg -> System.out.printf("%-15s%s%n", arg.prepareHeader(), arg.prepareValues())
+        );
     }
 }

@@ -32,12 +32,15 @@ class CommandTest {
     @Test
     void shouldPrintCorrectOutput() {
         // given
-        final String command = "./test.exe";
+        final String commandArg = "./test.exe";
+        final Command command = new Command(commandArg);
 
         // when
-        final String result = new Command(command).preparePrint();
+        final String resultHeader = command.prepareHeader();
+        final String resultValue = command.prepareValues();
 
         // then
-        assertThat(result).isEqualTo("command\t\t./test.exe");
+        assertThat(resultHeader).isEqualTo("command");
+        assertThat(resultValue).isEqualTo("./test.exe");
     }
 }

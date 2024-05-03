@@ -13,7 +13,12 @@ class Command implements CronArgument {
     }
 
     @Override
-    public String preparePrint() {
-        return "command\t\t" + command;
+    public String prepareHeader() {
+        return "command";
+    }
+
+    @Override
+    public String prepareValues() {
+        return command;
     }
 }

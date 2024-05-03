@@ -1,5 +1,6 @@
 package pl.kruczek.cron.definition;
 
 public interface CronArgument {
-    String preparePrint();
+    String prepareHeader();
+    String prepareValues();
 }

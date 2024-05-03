@@ -2,18 +2,21 @@ package pl.kruczek.cron.definition;
 
 import io.vavr.collection.Set;
 
-import java.util.StringJoiner;
-
 class DayOfMonth implements CronArgument {
 
     private final Set<Integer> dayOfMonth;
 
     DayOfMonth(String dayOfMonthArgs) {
-        this.dayOfMonth = CronDefinitionUtil.parseArgs(dayOfMonthArgs, CronDefinitionUtil.Unit.HOURS);
+        this.dayOfMonth = CronDefinitionUtil.parseArgs(dayOfMonthArgs, CronDefinitionUtil.Unit.DAY_OF_MONTH);
     }
 
     @Override
-    public String preparePrint() {
-        return "day of month\t\t" + dayOfMonth.mkString(", ");
+    public String prepareHeader() {
+        return "day of month";
+    }
+
+    @Override
+    public String prepareValues() {
+        return dayOfMonth.mkString(", ");
     }
 }
