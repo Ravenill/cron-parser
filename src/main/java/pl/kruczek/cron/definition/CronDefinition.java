@@ -63,7 +63,7 @@ public class CronDefinition {
 
     public void printDefinition() {
         cronArguments.forEach(
-                arg -> System.out.printf("%-15s%s%n", arg.prepareHeader(), arg.prepareValues())
+                arg -> System.out.printf("%-14s%s%n", arg.prepareHeader(), arg.prepareValues())
         );
     }
 }
