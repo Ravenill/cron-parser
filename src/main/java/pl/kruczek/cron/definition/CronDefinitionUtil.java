@@ -9,8 +9,14 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import static io.vavr.API.$;
+import static io.vavr.API.Case;
+import static io.vavr.Predicates.not;
+
 @UtilityClass
 class CronDefinitionUtil {
+
+    public static final String[] EMPTY_FROM_TO_VALUES = {"", ""};
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     enum Unit {
@@ -24,8 +30,14 @@ class CronDefinitionUtil {
         private final int maxAllowed;
     }
 
+    // suppress unchecked coz vavr Api.Case
+    @SuppressWarnings("unchecked")
     Set<Integer> parseArgs(String args, Unit unit) {
-        return Try.of(() -> parseArgsToSet(args, unit)) // Set provide uniqueness
+        return Try.of(() -> parseArgsToSet(args, unit))   // Set provide uniqueness
+                .mapFailure(Case(
+                        $(not(IllegalArgumentException.class::isInstance)),
+                        () -> new IllegalArgumentException("Incorrect format: " + args + " for unit " + unit.name()))
+                )
                 .filter(
                         parsedValues -> validate(parsedValues, unit),
                         () -> new IllegalArgumentException("Value: " + args + " not supported for unit: " + unit.name())
@@ -42,21 +54,25 @@ class CronDefinitionUtil {
         final String firstChar = String.valueOf(args.charAt(0));
         final boolean isFirstCharANumber = NumberUtils.isParsable(firstChar);
 
-        final boolean hasMoreThanOneGroupInDefinition = args.contains(",");
+        final boolean hasMoreThanOneGroupInArgs = args.contains(",");
+        final boolean hasStepValue = args.contains("/");
         final boolean hasFromToValue = args.contains("-");
 
         if (hasOneChar && !isFirstCharANumber) {
             // single special chars (like *)
             return parseOneSpecialCharacter(firstChar, unit);
+        } else if (hasStepValue) {
+            // step like (*/15)
+            return parseStepValue(args, unit);
         } else if (hasMoreThanOneChar && !isFirstCharANumber) {
             // not allowed (like -21 or aliases @yearly)
             throw new IllegalArgumentException("Value: " + args + " not supported for unit: " + unit.name());
-        } else if (hasMoreThanOneGroupInDefinition) {
+        } else if (hasMoreThanOneGroupInArgs) {
             // groups (like 1,2,3,10-20)
             return parseGroups(args, unit);
         } else if (hasFromToValue) {
             // from-to (like 10-20)
-            return parseFromToValue(args, unit);
+            return parseFromToValue(args);
         } else {
             // single (like 2)
             return parseSingleValue(args);
@@ -84,7 +100,36 @@ class CronDefinitionUtil {
                 .toSet();
     }
 
-    private Set<Integer> parseFromToValue(String args, Unit unit) {
+    private Set<Integer> parseStepValue(String args, Unit unit) {
+        final String[] stepDefinition = args.split("/");
+        if (stepDefinition.length != 2) {
+            // not allowed (like 3//4)
+            throw new IllegalArgumentException("Incorrect step value definition: " + args);
+        }
+
+        final String fromToAsString = stepDefinition[0];
+        final boolean isFromToValueAsAllValues = fromToAsString.length() == 1 && fromToAsString.contains("*");
+
+        final String[] fromToValues = !isFromToValueAsAllValues ? fromToAsString.split("-") : EMPTY_FROM_TO_VALUES;
+        if (fromToValues.length != 2) {
+            // not allowed (like 2--3)
+            throw new IllegalArgumentException("Incorrect from-to value definition: " + args);
+        }
+
+        final int from = isFromToValueAsAllValues
+                ? unit.minAllowed
+                : Integer.parseInt(fromToAsString.split("-")[0]);
+
+        final int to = isFromToValueAsAllValues
+                ? unit.maxAllowed
+                : Integer.parseInt(fromToAsString.split("-")[1]);
+
+        final int step = Integer.parseInt(stepDefinition[1]);
+        return Stream.rangeClosedBy(from, to, step)
+                .toSet();
+    }
+
+    private Set<Integer> parseFromToValue(String args) {
         final String[] fromAndToValues = args.split("-");
         if (fromAndToValues.length != 2) {
             // not allowed (like 2--3)

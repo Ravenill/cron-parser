@@ -12,6 +12,6 @@ class Minutes implements CronArgument {
 
     @Override
     public String preparePrint() {
-        return "minute\t\t";
+        return "minute\t\t" + minutes.mkString(", ");
     }
 }

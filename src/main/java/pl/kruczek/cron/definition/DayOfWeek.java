@@ -12,6 +12,6 @@ class DayOfWeek implements CronArgument {
 
     @Override
     public String preparePrint() {
-        return "day of week\t\t";
+        return "day of week\t\t" + dayOfWeek.mkString(", ");
     }
 }

@@ -2,6 +2,8 @@ package pl.kruczek.cron.definition;
 
 import io.vavr.collection.Set;
 
+import java.util.StringJoiner;
+
 class DayOfMonth implements CronArgument {
 
     private final Set<Integer> dayOfMonth;
@@ -12,6 +14,6 @@ class DayOfMonth implements CronArgument {
 
     @Override
     public String preparePrint() {
-        return "day of month\t\t";
+        return "day of month\t\t" + dayOfMonth.mkString(", ");
     }
 }

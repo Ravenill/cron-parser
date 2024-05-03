@@ -12,6 +12,6 @@ class Months implements CronArgument {
 
     @Override
     public String preparePrint() {
-        return "month\t\t";
+        return "month\t\t" + months.mkString(", ");
     }
 }

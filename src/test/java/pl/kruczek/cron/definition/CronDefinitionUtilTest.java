@@ -118,6 +118,60 @@ class CronDefinitionUtilTest {
     }
 
     @Nested
+    class Step {
+        private static Stream<Arguments> correctArgumentsTest() {
+            return Stream.of(
+                    Arguments.of("*/10", CronDefinitionUtil.Unit.MINUTES, HashSet.of(0, 10, 20, 30, 40, 50).toSortedSet()),
+                    Arguments.of("*/80", CronDefinitionUtil.Unit.MINUTES, HashSet.of(0).toSortedSet()),
+                    Arguments.of("20-23/2", CronDefinitionUtil.Unit.HOURS, HashSet.of(20, 22).toSortedSet()),
+                    Arguments.of("*/10", CronDefinitionUtil.Unit.DAY_OF_MONTH, HashSet.of(1, 11, 21, 31).toSortedSet()),
+                    Arguments.of("20-34/5", CronDefinitionUtil.Unit.DAY_OF_MONTH, HashSet.of(20, 25, 30).toSortedSet()),
+                    Arguments.of("3-12/2", CronDefinitionUtil.Unit.MONTHS, HashSet.of(3, 5, 7, 9, 11).toSortedSet()),
+                    Arguments.of("1-7/1", CronDefinitionUtil.Unit.DAY_OF_WEEK, HashSet.of(1, 2, 3, 4, 5, 6, 7).toSortedSet())
+            );
+        }
+
+        @ParameterizedTest
+        @MethodSource("correctArgumentsTest")
+        void shouldParseSomeStepDefinitions(String valueToParse, CronDefinitionUtil.Unit unit, Set<Integer> expectedValues) {
+            // given
+
+            // when
+            final Set<Integer> result = CronDefinitionUtil.parseArgs(valueToParse, unit);
+
+            // then
+            assertThat(result).containsExactlyElementsOf(expectedValues);
+        }
+
+        private static Stream<Arguments> incorrectArgumentsTest() {
+            return Stream.of(
+                    Arguments.of("-/5", CronDefinitionUtil.Unit.MINUTES),
+                    Arguments.of("*/5/5", CronDefinitionUtil.Unit.MINUTES),
+                    Arguments.of("70/60", CronDefinitionUtil.Unit.MINUTES),
+                    Arguments.of("70-100/5", CronDefinitionUtil.Unit.MINUTES),
+                    Arguments.of("25/5", CronDefinitionUtil.Unit.HOURS),
+                    Arguments.of("14/5", CronDefinitionUtil.Unit.DAY_OF_MONTH),
+                    Arguments.of("20-35/5", CronDefinitionUtil.Unit.DAY_OF_MONTH),
+                    Arguments.of("-20/20", CronDefinitionUtil.Unit.MONTHS),
+                    Arguments.of("10-20/5", CronDefinitionUtil.Unit.MONTHS),
+                    Arguments.of("a/10", CronDefinitionUtil.Unit.DAY_OF_WEEK),
+                    Arguments.of("10/7", CronDefinitionUtil.Unit.DAY_OF_WEEK),
+                    Arguments.of("*//2", CronDefinitionUtil.Unit.DAY_OF_WEEK)
+            );
+        }
+
+        @ParameterizedTest
+        @MethodSource("incorrectArgumentsTest")
+        void shouldThrowExceptionOnSomeStepIncorrectDefinitions(String valueToParse, CronDefinitionUtil.Unit unit) {
+            // given
+
+            // when then
+            assertThatThrownBy(() -> CronDefinitionUtil.parseArgs(valueToParse, unit))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
+    @Nested
     class FromTo {
         private static Stream<Arguments> correctArgumentsTest() {
             return Stream.of(
@@ -148,7 +202,9 @@ class CronDefinitionUtilTest {
                     Arguments.of("20-24", CronDefinitionUtil.Unit.HOURS),
                     Arguments.of("30-40", CronDefinitionUtil.Unit.DAY_OF_MONTH),
                     Arguments.of("-20-3", CronDefinitionUtil.Unit.MONTHS),
-                    Arguments.of("8-8", CronDefinitionUtil.Unit.DAY_OF_WEEK)
+                    Arguments.of("8-8", CronDefinitionUtil.Unit.DAY_OF_WEEK),
+                    Arguments.of("a-g", CronDefinitionUtil.Unit.DAY_OF_WEEK),
+                    Arguments.of("5-g", CronDefinitionUtil.Unit.DAY_OF_WEEK)
             );
         }
 
