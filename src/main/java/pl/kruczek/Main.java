@@ -16,14 +16,18 @@ public class Main {
         }
 
         Try.of(() -> cronParser.parseDefinition(args[0]))
+                .onFailure(Main::promptCauseOfFailure)
                 .onFailure(ex -> promptHelp())
-                .onSuccess(CronDefinition::printDefinition)
-                .get();
+                .onSuccess(CronDefinition::printDefinition);
+    }
+
+    private static void promptCauseOfFailure(Throwable ex) {
+        System.err.println(ex.getMessage());
+        System.err.println("\n");
     }
 
     private static void promptHelp() {
-        System.err.println("Invalid arguments...");
-        System.err.println("Valid is: <minutes> <hours> <day of month> <month> <day of week> <command>");
-        System.err.println("Eg. call: java -jar cron-arser-1.0-SNAPSHOT.jar \"*/15 0 1,15 * 1-5 /usr/bin/find\"");
+        System.err.println("Valid arguments: <minutes> <hours> <day of month> <month> <day of week> <command>");
+        System.err.println("Eg. call: java -jar cron-parser-jar-with-dependencies.jar \"*/15 0 1,15 * 1-5 /usr/bin/find\"");
     }
 }

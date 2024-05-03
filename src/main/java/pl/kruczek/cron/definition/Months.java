@@ -17,6 +17,6 @@ class Months implements CronArgument {
 
     @Override
     public String prepareValues() {
-        return months.mkString(", ");
+        return months.mkString(" ");
     }
 }

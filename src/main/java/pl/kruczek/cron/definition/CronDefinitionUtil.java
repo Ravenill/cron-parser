@@ -7,11 +7,11 @@ import io.vavr.control.Try;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
-import static io.vavr.Predicates.not;
 
 @UtilityClass
 class CronDefinitionUtil {
@@ -34,9 +34,12 @@ class CronDefinitionUtil {
     @SuppressWarnings("unchecked")
     Set<Integer> parseArgs(String args, Unit unit) {
         return Try.of(() -> parseArgsToSet(args, unit))   // Set provide uniqueness
-                .mapFailure(Case(
-                        $(not(IllegalArgumentException.class::isInstance)),
-                        () -> new IllegalArgumentException("Incorrect format: " + args + " for unit " + unit.name()))
+                .mapFailure(
+                        Case(
+                                $(NumberFormatException.class::isInstance),
+                                () -> new IllegalArgumentException("Incorrect format: " + args + " for unit " + unit.name())
+                        ),
+                        Case($(), ex -> ex)
                 )
                 .filter(
                         parsedValues -> validate(parsedValues, unit),
@@ -47,6 +50,10 @@ class CronDefinitionUtil {
     }
 
     private Set<Integer> parseArgsToSet(String args, Unit unit) {
+        if (StringUtils.isBlank(args)) {
+            throw new IllegalArgumentException("Value or part of group cannot be empty. Unit: " + unit.name());
+        }
+
         final int argsLength = args.length();
         final boolean hasOneChar = argsLength == 1;
         final boolean hasMoreThanOneChar = argsLength > 1;
@@ -58,7 +65,10 @@ class CronDefinitionUtil {
         final boolean hasStepValue = args.contains("/");
         final boolean hasFromToValue = args.contains("-");
 
-        if (hasOneChar && !isFirstCharANumber) {
+        if (hasMoreThanOneGroupInArgs) {
+            // groups (like 1,2,3,10-20,14-20/2)
+            return parseGroups(args, unit);
+        } else if (hasOneChar && !isFirstCharANumber) {
             // single special chars (like *)
             return parseOneSpecialCharacter(firstChar, unit);
         } else if (hasStepValue) {
@@ -67,9 +77,6 @@ class CronDefinitionUtil {
         } else if (hasMoreThanOneChar && !isFirstCharANumber) {
             // not allowed (like -21 or aliases @yearly)
             throw new IllegalArgumentException("Value: " + args + " not supported for unit: " + unit.name());
-        } else if (hasMoreThanOneGroupInArgs) {
-            // groups (like 1,2,3,10-20)
-            return parseGroups(args, unit);
         } else if (hasFromToValue) {
             // from-to (like 10-20)
             return parseFromToValue(args);

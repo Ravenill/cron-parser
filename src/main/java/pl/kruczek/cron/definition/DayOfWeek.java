@@ -17,6 +17,6 @@ class DayOfWeek implements CronArgument {
 
     @Override
     public String prepareValues() {
-        return dayOfWeek.mkString(", ");
+        return dayOfWeek.mkString(" ");
     }
 }

@@ -200,6 +200,7 @@ class CronDefinitionUtilTest {
                     Arguments.of("1--2", CronDefinitionUtil.Unit.MINUTES),
                     Arguments.of("-1-0", CronDefinitionUtil.Unit.MINUTES),
                     Arguments.of("20-24", CronDefinitionUtil.Unit.HOURS),
+                    Arguments.of("20-", CronDefinitionUtil.Unit.HOURS),
                     Arguments.of("30-40", CronDefinitionUtil.Unit.DAY_OF_MONTH),
                     Arguments.of("-20-3", CronDefinitionUtil.Unit.MONTHS),
                     Arguments.of("8-8", CronDefinitionUtil.Unit.DAY_OF_WEEK),
@@ -230,6 +231,10 @@ class CronDefinitionUtilTest {
                     Arguments.of(
                             "0,1-5,2-6,4-6,10", CronDefinitionUtil.Unit.MINUTES,
                             HashSet.of(0, 1, 2, 3, 4, 5, 6, 10).toSortedSet()
+                    ),
+                    Arguments.of(
+                            "0,15-30/10,30,31,40-42", CronDefinitionUtil.Unit.MINUTES,
+                            HashSet.of(0, 15, 25, 30, 31, 40, 41, 42).toSortedSet()
                     ),
                     Arguments.of(
                             "0,5-10,13", CronDefinitionUtil.Unit.HOURS,
