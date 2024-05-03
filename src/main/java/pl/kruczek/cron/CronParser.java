@@ -1,4 +1,4 @@
-package pl.kruczek.cron.parser;
+package pl.kruczek.cron;
 
 import pl.kruczek.cron.definition.CronDefinition;
 

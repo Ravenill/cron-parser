@@ -2,7 +2,7 @@ package pl.kruczek;
 
 import io.vavr.control.Try;
 import pl.kruczek.cron.definition.CronDefinition;
-import pl.kruczek.cron.parser.CronParser;
+import pl.kruczek.cron.CronParser;
 
 public class Main {
 

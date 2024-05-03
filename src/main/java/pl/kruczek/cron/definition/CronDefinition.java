@@ -10,7 +10,7 @@ public class CronDefinition {
     private final Minutes minutes;
     private final Hours hours;
     private final DayOfMonth dayOfMonth;
-    private final Month month;
+    private final Months months;
     private final DayOfWeek dayOfWeek;
     private final Command command;
 
@@ -18,37 +18,37 @@ public class CronDefinition {
         private Minutes minutes;
         private Hours hours;
         private DayOfMonth dayOfMonth;
-        private Month month;
+        private Months months;
         private DayOfWeek dayOfWeek;
         private Command command;
 
-        public CronDefinitionBuilder withMinutes(String minutes) {
-            this.minutes = new Minutes(minutes);
+        public CronDefinitionBuilder withMinutes(String minutesArgs) {
+            this.minutes = new Minutes(minutesArgs);
             return this;
         }
 
-        public CronDefinitionBuilder withHours(String hours) {
-            this.hours = new Hours(hours);
+        public CronDefinitionBuilder withHours(String hoursArgs) {
+            this.hours = new Hours(hoursArgs);
             return this;
         }
 
-        public CronDefinitionBuilder withDayOfMonth(String dayOfMonth) {
-            this.dayOfMonth = new DayOfMonth(dayOfMonth);
+        public CronDefinitionBuilder withDayOfMonth(String dayOfMonthArgs) {
+            this.dayOfMonth = new DayOfMonth(dayOfMonthArgs);
             return this;
         }
 
-        public CronDefinitionBuilder withMonth(String month) {
-            this.month = new Month(month);
+        public CronDefinitionBuilder withMonth(String monthArgs) {
+            this.months = new Months(monthArgs);
             return this;
         }
 
-        public CronDefinitionBuilder withDayOfWeek(String dayOfWeek) {
-            this.dayOfWeek = new DayOfWeek(dayOfWeek);
+        public CronDefinitionBuilder withDayOfWeek(String dayOfWeekArgs) {
+            this.dayOfWeek = new DayOfWeek(dayOfWeekArgs);
             return this;
         }
 
-        public CronDefinitionBuilder withCommand(String command) {
-            this.command = new Command(command);
+        public CronDefinitionBuilder withCommand(String commandArgs) {
+            this.command = new Command(commandArgs);
             return this;
         }
 
@@ -57,7 +57,7 @@ public class CronDefinition {
                     minutes,
                     hours,
                     dayOfMonth,
-                    month,
+                    months,
                     dayOfWeek,
                     command
             );
@@ -69,7 +69,7 @@ public class CronDefinition {
         System.out.println(minutes.preparePrint());
         System.out.println(hours.preparePrint());
         System.out.println(dayOfMonth.preparePrint());
-        System.out.println(month.preparePrint());
+        System.out.println(months.preparePrint());
         System.out.println(dayOfWeek.preparePrint());
         System.out.println(command.preparePrint());
     }

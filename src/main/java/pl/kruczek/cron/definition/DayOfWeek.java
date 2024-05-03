@@ -1,8 +1,13 @@
 package pl.kruczek.cron.definition;
 
-class DayOfWeek implements CronArgument {
-    DayOfWeek(String dayOfWeek) {
+import io.vavr.collection.Set;
 
+class DayOfWeek implements CronArgument {
+
+    private final Set<Integer> dayOfWeek;
+
+    DayOfWeek(String dayOfWeekArgs) {
+        this.dayOfWeek = CronDefinitionUtil.parseArgs(dayOfWeekArgs, CronDefinitionUtil.Unit.HOURS);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package pl.kruczek.cron.parser;
 
 import org.junit.jupiter.api.Test;
+import pl.kruczek.cron.CronParser;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

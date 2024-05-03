@@ -6,8 +6,8 @@ class Minutes implements CronArgument {
 
     private final Set<Integer> minutes;
 
-    Minutes(String minutes) {
-        this.minutes = ParserUtil.parse(minutes, ParserUtil.Unit.MINUTES);
+    Minutes(String minutesArgs) {
+        this.minutes = CronDefinitionUtil.parseArgs(minutesArgs, CronDefinitionUtil.Unit.MINUTES);
     }
 
     @Override
