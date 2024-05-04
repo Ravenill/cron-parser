@@ -1,4 +1,4 @@
-package pl.kruczek.cron.definition;
+package pl.kruczek.cron.expression;
 
 import org.junit.jupiter.api.Test;
 

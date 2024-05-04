@@ -1,4 +1,4 @@
-package pl.kruczek.cron.definition;
+package pl.kruczek.cron.expression;
 
 import org.apache.commons.lang3.StringUtils;
 

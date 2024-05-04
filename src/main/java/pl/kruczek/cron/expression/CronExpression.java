@@ -1,15 +1,15 @@
-package pl.kruczek.cron.definition;
+package pl.kruczek.cron.expression;
 
 import io.vavr.collection.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class CronDefinition {
+public class CronExpression {
 
     private final List<CronArgument> cronArguments;
 
-    public static class CronDefinitionBuilder {
+    public static class CronExpressionBuilder {
         private Minutes minutes;
         private Hours hours;
         private DayOfMonth dayOfMonth;
@@ -17,38 +17,38 @@ public class CronDefinition {
         private DayOfWeek dayOfWeek;
         private Command command;
 
-        public CronDefinitionBuilder withMinutes(String minutesArgs) {
+        public CronExpressionBuilder withMinutes(String minutesArgs) {
             this.minutes = new Minutes(minutesArgs);
             return this;
         }
 
-        public CronDefinitionBuilder withHours(String hoursArgs) {
+        public CronExpressionBuilder withHours(String hoursArgs) {
             this.hours = new Hours(hoursArgs);
             return this;
         }
 
-        public CronDefinitionBuilder withDayOfMonth(String dayOfMonthArgs) {
+        public CronExpressionBuilder withDayOfMonth(String dayOfMonthArgs) {
             this.dayOfMonth = new DayOfMonth(dayOfMonthArgs);
             return this;
         }
 
-        public CronDefinitionBuilder withMonth(String monthArgs) {
+        public CronExpressionBuilder withMonth(String monthArgs) {
             this.months = new Months(monthArgs);
             return this;
         }
 
-        public CronDefinitionBuilder withDayOfWeek(String dayOfWeekArgs) {
+        public CronExpressionBuilder withDayOfWeek(String dayOfWeekArgs) {
             this.dayOfWeek = new DayOfWeek(dayOfWeekArgs);
             return this;
         }
 
-        public CronDefinitionBuilder withCommand(String commandArgs) {
+        public CronExpressionBuilder withCommand(String commandArgs) {
             this.command = new Command(commandArgs);
             return this;
         }
 
-        public CronDefinition build() {
-            return new CronDefinition(
+        public CronExpression build() {
+            return new CronExpression(
                     List.of( // order of args is binding
                             minutes,
                             hours,
@@ -61,7 +61,7 @@ public class CronDefinition {
         }
     }
 
-    public void printDefinition() {
+    public void printDescription() {
         cronArguments.forEach(
                 arg -> System.out.printf("%-14s%s%n", arg.prepareHeader(), arg.prepareValues())
         );

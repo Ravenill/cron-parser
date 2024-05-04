@@ -2,33 +2,57 @@ package pl.kruczek;
 
 import org.junit.jupiter.api.Test;
 
+import static com.github.stefanbirkner.systemlambda.SystemLambda.tapSystemErrNormalized;
 import static com.github.stefanbirkner.systemlambda.SystemLambda.tapSystemOutNormalized;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
 class MainTest {
 
     @Test
-    void shouldNotRunParserOnToManyParams() {
+    void shouldNotRunParserOnToManyParams() throws Exception {
         //given
         final String[] params = {"* * * * *", "/test.exe"};
 
-        //when then
-        assertThatThrownBy(() -> Main.main(params))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Invalid arguments");
+        //when
+        final String output = tapSystemErrNormalized(() -> Main.main(params));
+
+        // then
+        assertThat(output).isEqualTo(
+                """
+                        Invalid arguments
+                                                
+                                                
+                        Valid argument format: <minutes> <hours> <day of month> <month> <day of week> <command>
+                        ---
+                        Eg call:
+                            java -jar cron-parser-jar-with-dependencies.jar \"*/15 0 1,15 * 1-5 /usr/bin/find\"
+                        
+                        """
+        );
     }
 
     @Test
-    void shouldNotRunParserOnNoneParams() {
+    void shouldNotRunParserOnNoneParams() throws Exception {
         //given
         final String[] params = {};
 
-        //when then
-        assertThatThrownBy(() -> Main.main(params))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Invalid arguments");
+        //when
+        final String output = tapSystemErrNormalized(() -> Main.main(params));
+
+        // then
+        assertThat(output).isEqualTo(
+                """
+                        Invalid arguments
+                                                
+                                                
+                        Valid argument format: <minutes> <hours> <day of month> <month> <day of week> <command>
+                        ---
+                        Eg call:
+                            java -jar cron-parser-jar-with-dependencies.jar \"*/15 0 1,15 * 1-5 /usr/bin/find\"
+                        
+                        """
+        );
     }
 
     @Test

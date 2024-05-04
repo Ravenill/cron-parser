@@ -1,4 +1,4 @@
-package pl.kruczek.cron.definition;
+package pl.kruczek.cron.expression;
 
 import io.vavr.collection.Set;
 
@@ -7,7 +7,7 @@ class Hours implements CronArgument {
     private final Set<Integer> hours;
 
     Hours(String hoursArgs) {
-        this.hours = CronDefinitionUtil.parseArgs(hoursArgs, CronDefinitionUtil.Unit.HOURS);
+        this.hours = CronExpressionUtil.parseArgs(hoursArgs, CronExpressionUtil.Unit.HOURS);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package pl.kruczek.cron.definition;
+package pl.kruczek.cron.expression;
 
 public interface CronArgument {
     String prepareHeader();

@@ -1,4 +1,4 @@
-package pl.kruczek.cron.definition;
+package pl.kruczek.cron.expression;
 
 import io.vavr.collection.HashSet;
 import io.vavr.collection.Set;
@@ -14,7 +14,7 @@ import static io.vavr.API.$;
 import static io.vavr.API.Case;
 
 @UtilityClass
-class CronDefinitionUtil {
+class CronExpressionUtil {
 
     public static final String[] EMPTY_FROM_TO_VALUES = {"", ""};
 
@@ -43,7 +43,7 @@ class CronDefinitionUtil {
                 )
                 .filter(
                         parsedValues -> validate(parsedValues, unit),
-                        () -> new IllegalArgumentException("Value: " + args + " not supported for unit: " + unit.name())
+                        () -> new IllegalArgumentException("Value: " + args + " not allowed for unit: " + unit.name())
                 )
                 .map(Set::toSortedSet)
                 .get();
@@ -79,7 +79,7 @@ class CronDefinitionUtil {
             throw new IllegalArgumentException("Value: " + args + " not supported for unit: " + unit.name());
         } else if (hasFromToValue) {
             // from-to (like 10-20)
-            return parseFromToValue(args);
+            return parseFromToValue(args, unit);
         } else {
             // single (like 2)
             return parseSingleValue(args);
@@ -90,7 +90,7 @@ class CronDefinitionUtil {
         return switch (specialCharacter) {
             case "*" -> Stream.rangeClosed(unit.minAllowed, unit.maxAllowed)
                     .toSet();
-            default -> throw new IllegalArgumentException("Not supported char: " + specialCharacter);
+            default -> throw new IllegalArgumentException("Not supported char: " + specialCharacter + " for unit: " + unit.name());
         };
     }
 
@@ -98,7 +98,7 @@ class CronDefinitionUtil {
         final String[] groups = args.split(",");
         if (groups.length <= 1) {
             // not allowed (like , or 3,)
-            throw new IllegalArgumentException("Incorrect group definition: " + args);
+            throw new IllegalArgumentException("Incorrect group definition: " + args + " for unit: " + unit.name());
         }
 
         return Stream.of(groups)
@@ -111,7 +111,7 @@ class CronDefinitionUtil {
         final String[] stepDefinition = args.split("/");
         if (stepDefinition.length != 2) {
             // not allowed (like 3//4)
-            throw new IllegalArgumentException("Incorrect step value definition: " + args);
+            throw new IllegalArgumentException("Incorrect step value definition: " + args + " for unit: " + unit.name());
         }
 
         final String fromToAsString = stepDefinition[0];
@@ -120,7 +120,7 @@ class CronDefinitionUtil {
         final String[] fromToValues = !isFromToValueAsAllValues ? fromToAsString.split("-") : EMPTY_FROM_TO_VALUES;
         if (fromToValues.length != 2) {
             // not allowed (like 2--3)
-            throw new IllegalArgumentException("Incorrect from-to value definition: " + args);
+            throw new IllegalArgumentException("Incorrect from-to in step value definition: " + args + " for unit: " + unit.name());
         }
 
         final int from = isFromToValueAsAllValues
@@ -136,11 +136,11 @@ class CronDefinitionUtil {
                 .toSet();
     }
 
-    private Set<Integer> parseFromToValue(String args) {
+    private Set<Integer> parseFromToValue(String args, Unit unit) {
         final String[] fromAndToValues = args.split("-");
         if (fromAndToValues.length != 2) {
             // not allowed (like 2--3)
-            throw new IllegalArgumentException("Incorrect from-to value definition: " + args);
+            throw new IllegalArgumentException("Incorrect from-to value definition: " + args  + " for unit: " + unit.name());
         }
 
         final int from = Integer.parseInt(fromAndToValues[0]);

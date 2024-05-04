@@ -1,4 +1,4 @@
-package pl.kruczek.cron.definition;
+package pl.kruczek.cron.expression;
 
 import io.vavr.collection.Set;
 
@@ -7,7 +7,7 @@ class DayOfMonth implements CronArgument {
     private final Set<Integer> dayOfMonth;
 
     DayOfMonth(String dayOfMonthArgs) {
-        this.dayOfMonth = CronDefinitionUtil.parseArgs(dayOfMonthArgs, CronDefinitionUtil.Unit.DAY_OF_MONTH);
+        this.dayOfMonth = CronExpressionUtil.parseArgs(dayOfMonthArgs, CronExpressionUtil.Unit.DAY_OF_MONTH);
     }
 
     @Override

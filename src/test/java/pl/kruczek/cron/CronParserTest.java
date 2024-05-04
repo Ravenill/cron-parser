@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import pl.kruczek.cron.definition.CronDefinition;
+import pl.kruczek.cron.expression.CronExpression;
 
 import java.util.stream.Stream;
 
@@ -23,7 +23,7 @@ class CronParserTest {
         final String args = "* * * * * * * * command";
 
         // when then
-        assertThatThrownBy(() -> classUnderTest.parseDefinition(args))
+        assertThatThrownBy(() -> classUnderTest.parseExpression(args))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Unsupported argument count...");
     }
@@ -34,7 +34,7 @@ class CronParserTest {
         final String args = "* * * * * command";
 
         // when then
-        assertThatCode(() -> classUnderTest.parseDefinition(args))
+        assertThatCode(() -> classUnderTest.parseExpression(args))
                 .doesNotThrowAnyException();
     }
 
@@ -104,8 +104,8 @@ class CronParserTest {
         // given
 
         // when
-        final CronDefinition cronDefinition = classUnderTest.parseDefinition(args);
-        final String output = tapSystemOutNormalized(cronDefinition::printDefinition);
+        final CronExpression cronExpression = classUnderTest.parseExpression(args);
+        final String output = tapSystemOutNormalized(cronExpression::printDescription);
 
         // then
         assertThat(output).isEqualTo(expectedResult);
