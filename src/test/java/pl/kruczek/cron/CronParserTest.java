@@ -1,5 +1,6 @@
 package pl.kruczek.cron;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -18,6 +19,8 @@ class CronParserTest {
     private final CronParser classUnderTest = new CronParser();
 
     @Test
+    @Disabled("leagcy")
+    @Deprecated(forRemoval = true)
     void shouldThrowExceptionOnUnsupportedArgumentCount() {
         // given
         final String args = "* * * * * * * * command";

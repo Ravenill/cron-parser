@@ -2,22 +2,22 @@ package pl.kruczek.cron.expression;
 
 import io.vavr.collection.Set;
 
-class Hours implements CronArgument {
+class Years implements CronArgument {
 
-    private final Set<Integer> hours;
+    private final Set<Integer> years;
 
-    Hours(String hoursArgs) {
-        this.hours = CronExpressionUtil.parseArgs(hoursArgs, CronExpressionUtil.Unit.HOURS);
+    public Years(String yearsArgs) {
+        this.years = CronExpressionUtil.parseArgs(yearsArgs, CronExpressionUtil.Unit.YEARS);
     }
 
     @Override
     public String prepareHeader() {
-        return "hour";
+        return "year";
     }
 
     @Override
     public String prepareValues() {
-        return hours.mkString(" ");
+        return years.mkString(" ");
     }
 
     @Override

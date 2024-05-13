@@ -19,4 +19,9 @@ class Months implements CronArgument {
     public String prepareValues() {
         return months.mkString(" ");
     }
+
+    @Override
+    public boolean shouldBeVisible() {
+        return true;
+    }
 }

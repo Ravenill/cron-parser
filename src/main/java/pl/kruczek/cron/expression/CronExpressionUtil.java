@@ -24,7 +24,8 @@ class CronExpressionUtil {
         HOURS(0, 23),
         DAY_OF_MONTH(1, 31),
         MONTHS(1, 12),
-        DAY_OF_WEEK(1, 7);
+        DAY_OF_WEEK(1, 7),
+        YEARS(1990, 2000);
 
         private final int minAllowed;
         private final int maxAllowed;
@@ -74,16 +75,38 @@ class CronExpressionUtil {
         } else if (hasStepValue) {
             // step like (*/15)
             return parseStepValue(args, unit);
-        } else if (hasMoreThanOneChar && !isFirstCharANumber) {
-            // not allowed (like -21 or aliases @yearly)
-            throw new IllegalArgumentException("Value: " + args + " not supported for unit: " + unit.name());
         } else if (hasFromToValue) {
             // from-to (like 10-20)
             return parseFromToValue(args, unit);
+        } else if (hasMoreThanOneChar && !isFirstCharANumber) {
+            // special input like MON, -21 or aliases @yearly
+            return parseSpecialInput(args, unit);
         } else {
             // single (like 2)
             return parseSingleValue(args);
         }
+    }
+
+    private Set<Integer> parseSpecialInput(String args, Unit unit) {
+        return switch (unit) {
+            case DAY_OF_WEEK -> parseSpecialInputForDayOfWeek(args);
+            // not allowed (like -21 or aliases @yearly)
+            default -> throw new IllegalArgumentException("Value: " + args + " not supported for unit: " + unit.name());
+        };
+    }
+
+    private Set<Integer> parseSpecialInputForDayOfWeek(String args) {
+        return switch (args) {
+            case "MON" -> HashSet.of(1);
+            case "TUE" -> HashSet.of(2);
+            case "WED" -> HashSet.of(3);
+            case "THU" -> HashSet.of(4);
+            case "FRI" -> HashSet.of(5);
+            case "SAT" -> HashSet.of(6);
+            case "SUN" -> HashSet.of(7);
+            // not allowed (like ABC)
+            default -> throw new IllegalArgumentException("Value: " + args + " not supported for unit DAY_OF_WEEK");
+        };
     }
 
     private Set<Integer> parseOneSpecialCharacter(String specialCharacter, Unit unit) {
@@ -125,11 +148,11 @@ class CronExpressionUtil {
 
         final int from = isFromToValueAsAllValues
                 ? unit.minAllowed
-                : Integer.parseInt(fromToAsString.split("-")[0]);
+                : tryParseArgAsNumber(fromToAsString.split("-")[0], unit);
 
         final int to = isFromToValueAsAllValues
                 ? unit.maxAllowed
-                : Integer.parseInt(fromToAsString.split("-")[1]);
+                : tryParseArgAsNumber(fromToAsString.split("-")[1], unit);
 
         final int step = Integer.parseInt(stepDefinition[1]);
         return Stream.rangeClosedBy(from, to, step)
@@ -140,11 +163,11 @@ class CronExpressionUtil {
         final String[] fromAndToValues = args.split("-");
         if (fromAndToValues.length != 2) {
             // not allowed (like 2--3)
-            throw new IllegalArgumentException("Incorrect from-to value definition: " + args  + " for unit: " + unit.name());
+            throw new IllegalArgumentException("Incorrect from-to value definition: " + args + " for unit: " + unit.name());
         }
 
-        final int from = Integer.parseInt(fromAndToValues[0]);
-        final int to = Integer.parseInt(fromAndToValues[1]);
+        final int from = tryParseArgAsNumber(fromAndToValues[0], unit);
+        final int to = tryParseArgAsNumber(fromAndToValues[1], unit);
         return Stream.rangeClosed(from, to)
                 .toSet();
     }
@@ -157,5 +180,12 @@ class CronExpressionUtil {
         return parsedValues
                 .filter(value -> value < unit.minAllowed || value > unit.maxAllowed)
                 .isEmpty();
+    }
+
+    private Integer tryParseArgAsNumber(String args, Unit unit) {
+        return Try.of(() -> parseArgs(args, unit))
+                .recover(ex -> parseSingleValue(args))
+                .map(Set::get)
+                .getOrElseThrow(() -> new IllegalArgumentException("Incorrect data: " + args + " for unit: " + unit.name()));
     }
 }

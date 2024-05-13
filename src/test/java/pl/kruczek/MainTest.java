@@ -117,4 +117,91 @@ class MainTest {
                         """
         );
     }
+    @Test
+    void shouldPrintDataFromInterviewExample() throws Exception {
+        //given
+        final String[] params = {"5 4 * * * 1993,1994,1995 /usr/bin/find"};
+
+        //when
+        final String output = tapSystemOutNormalized(() -> Main.main(params));
+
+        // then
+        assertThat(output).isEqualTo(
+                """
+                        minute        5
+                        hour          4
+                        day of month  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+                        month         1 2 3 4 5 6 7 8 9 10 11 12
+                        day of week   1 2 3 4 5 6 7
+                        year          1993 1994 1995
+                        command       /usr/bin/find
+                        """
+        );
+    }
+
+    @Test
+    void shouldPrintDataFromInterviewExample2() throws Exception {
+        //given
+        final String[] params = {"5 4 * * MON-TUE 1993,1994,1995 /usr/bin/find"};
+
+        //when
+        final String output = tapSystemOutNormalized(() -> Main.main(params));
+
+        // then
+        assertThat(output).isEqualTo(
+                """
+                        minute        5
+                        hour          4
+                        day of month  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+                        month         1 2 3 4 5 6 7 8 9 10 11 12
+                        day of week   1 2
+                        year          1993 1994 1995
+                        command       /usr/bin/find
+                        """
+        );
+    }
+    @Test
+    void shouldPrintDataFromInterviewExample3() throws Exception {
+        //given
+        final String[] params = {"5 4 * * MON-TUE 1993,1994,1995 /usr/bin/find # comment"};
+
+        //when
+        final String output = tapSystemOutNormalized(() -> Main.main(params));
+
+        // then
+        assertThat(output).isEqualTo(
+                """
+                        minute        5
+                        hour          4
+                        day of month  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+                        month         1 2 3 4 5 6 7 8 9 10 11 12
+                        day of week   1 2
+                        year          1993 1994 1995
+                        command       /usr/bin/find
+                        comment        comment
+                        """
+        );
+    }
+
+    @Test
+    void shouldPrintDataFromInterviewExample4() throws Exception {
+        //given
+        final String[] params = {"5 4 * * MON-TUE /usr/bin/find # comment"};
+
+        //when
+        final String output = tapSystemOutNormalized(() -> Main.main(params));
+
+        // then
+        assertThat(output).isEqualTo(
+                """
+                        minute        5
+                        hour          4
+                        day of month  1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+                        month         1 2 3 4 5 6 7 8 9 10 11 12
+                        day of week   1 2
+                        command       /usr/bin/find
+                        comment        comment
+                        """
+        );
+    }
 }

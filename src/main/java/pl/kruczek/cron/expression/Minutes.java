@@ -19,4 +19,9 @@ class Minutes implements CronArgument {
     public String prepareValues() {
         return minutes.mkString(" ");
     }
+
+    @Override
+    public boolean shouldBeVisible() {
+        return true;
+    }
 }

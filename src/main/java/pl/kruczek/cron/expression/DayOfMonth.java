@@ -19,4 +19,9 @@ class DayOfMonth implements CronArgument {
     public String prepareValues() {
         return dayOfMonth.mkString(" ");
     }
+
+    @Override
+    public boolean shouldBeVisible() {
+        return true;
+    }
 }

@@ -4,6 +4,8 @@ import io.vavr.collection.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
+import java.util.Objects;
+
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class CronExpression {
 
@@ -16,6 +18,8 @@ public class CronExpression {
         private Months months;
         private DayOfWeek dayOfWeek;
         private Command command;
+        private Years years;
+        private Comment comment;
 
         public CronExpressionBuilder withMinutes(String minutesArgs) {
             this.minutes = new Minutes(minutesArgs);
@@ -47,23 +51,38 @@ public class CronExpression {
             return this;
         }
 
+        public CronExpressionBuilder withYears(String yearsArgs) {
+            this.years = new Years(yearsArgs);
+            return this;
+        }
+
+        public CronExpressionBuilder withComment(String comment) {
+            this.comment = new Comment(comment);
+            return this;
+        }
+
         public CronExpression build() {
             return new CronExpression(
                     List.of( // order of args is binding
-                            minutes,
-                            hours,
-                            dayOfMonth,
-                            months,
-                            dayOfWeek,
-                            command
-                    )
+                                    minutes,
+                                    hours,
+                                    dayOfMonth,
+                                    months,
+                                    dayOfWeek,
+                                    years,
+                                    command,
+                                    comment
+                            )
+                            .filter(Objects::nonNull)
             );
         }
     }
 
     public void printDescription() {
-        cronArguments.forEach(
-                arg -> System.out.printf("%-14s%s%n", arg.prepareHeader(), arg.prepareValues())
-        );
+        cronArguments
+                .filter(CronArgument::shouldBeVisible)
+                .forEach(
+                        arg -> System.out.printf("%-14s%s%n", arg.prepareHeader(), arg.prepareValues())
+                );
     }
 }

@@ -29,7 +29,11 @@ class CronExpressionUtilTest {
                     Arguments.of("1", CronExpressionUtil.Unit.MONTHS, HashSet.of(1)),
                     Arguments.of("12", CronExpressionUtil.Unit.MONTHS, HashSet.of(12)),
                     Arguments.of("1", CronExpressionUtil.Unit.DAY_OF_WEEK, HashSet.of(1)),
-                    Arguments.of("7", CronExpressionUtil.Unit.DAY_OF_WEEK, HashSet.of(7))
+                    Arguments.of("7", CronExpressionUtil.Unit.DAY_OF_WEEK, HashSet.of(7)),
+                    Arguments.of("1990", CronExpressionUtil.Unit.YEARS, HashSet.of(1990)),
+                    Arguments.of("2000", CronExpressionUtil.Unit.YEARS, HashSet.of(2000)),
+                    Arguments.of("MON", CronExpressionUtil.Unit.DAY_OF_WEEK, HashSet.of(1)),
+                    Arguments.of("THU", CronExpressionUtil.Unit.DAY_OF_WEEK, HashSet.of(4))
             );
         }
 
@@ -56,7 +60,10 @@ class CronExpressionUtilTest {
                     Arguments.of("0", CronExpressionUtil.Unit.MONTHS),
                     Arguments.of("13", CronExpressionUtil.Unit.MONTHS),
                     Arguments.of("-2", CronExpressionUtil.Unit.DAY_OF_WEEK),
-                    Arguments.of("8", CronExpressionUtil.Unit.DAY_OF_WEEK)
+                    Arguments.of("8", CronExpressionUtil.Unit.DAY_OF_WEEK),
+                    Arguments.of("1989", CronExpressionUtil.Unit.YEARS),
+                    Arguments.of("2010", CronExpressionUtil.Unit.YEARS),
+                    Arguments.of("ABC", CronExpressionUtil.Unit.DAY_OF_WEEK)
             );
         }
 
@@ -80,7 +87,8 @@ class CronExpressionUtilTest {
                     Arguments.of("*", CronExpressionUtil.Unit.HOURS, HashSet.ofAll(IntStream.rangeClosed(0, 23).toArray()).toSortedSet()),
                     Arguments.of("*", CronExpressionUtil.Unit.DAY_OF_MONTH, HashSet.ofAll(IntStream.rangeClosed(1, 31).toArray()).toSortedSet()),
                     Arguments.of("*", CronExpressionUtil.Unit.MONTHS, HashSet.ofAll(IntStream.rangeClosed(1, 12).toArray()).toSortedSet()),
-                    Arguments.of("*", CronExpressionUtil.Unit.DAY_OF_WEEK, HashSet.ofAll(IntStream.rangeClosed(1, 7).toArray()).toSortedSet())
+                    Arguments.of("*", CronExpressionUtil.Unit.DAY_OF_WEEK, HashSet.ofAll(IntStream.rangeClosed(1, 7).toArray()).toSortedSet()),
+                    Arguments.of("*", CronExpressionUtil.Unit.YEARS, HashSet.ofAll(IntStream.rangeClosed(1990, 2000).toArray()).toSortedSet())
             );
         }
 
@@ -127,7 +135,9 @@ class CronExpressionUtilTest {
                     Arguments.of("*/10", CronExpressionUtil.Unit.DAY_OF_MONTH, HashSet.of(1, 11, 21, 31).toSortedSet()),
                     Arguments.of("20-34/5", CronExpressionUtil.Unit.DAY_OF_MONTH, HashSet.of(20, 25, 30).toSortedSet()),
                     Arguments.of("3-12/2", CronExpressionUtil.Unit.MONTHS, HashSet.of(3, 5, 7, 9, 11).toSortedSet()),
-                    Arguments.of("1-7/1", CronExpressionUtil.Unit.DAY_OF_WEEK, HashSet.of(1, 2, 3, 4, 5, 6, 7).toSortedSet())
+                    Arguments.of("1-7/1", CronExpressionUtil.Unit.DAY_OF_WEEK, HashSet.of(1, 2, 3, 4, 5, 6, 7).toSortedSet()),
+                    Arguments.of("1990-2000/5", CronExpressionUtil.Unit.YEARS, HashSet.of(1990, 1995, 2000).toSortedSet()),
+                    Arguments.of("MON-FRI/2", CronExpressionUtil.Unit.DAY_OF_WEEK, HashSet.of(1, 3, 5).toSortedSet())
             );
         }
 
@@ -156,7 +166,10 @@ class CronExpressionUtilTest {
                     Arguments.of("10-20/5", CronExpressionUtil.Unit.MONTHS),
                     Arguments.of("a/10", CronExpressionUtil.Unit.DAY_OF_WEEK),
                     Arguments.of("10/7", CronExpressionUtil.Unit.DAY_OF_WEEK),
-                    Arguments.of("*//2", CronExpressionUtil.Unit.DAY_OF_WEEK)
+                    Arguments.of("*//2", CronExpressionUtil.Unit.DAY_OF_WEEK),
+                    Arguments.of("1990//2", CronExpressionUtil.Unit.YEARS),
+                    Arguments.of("1990/5", CronExpressionUtil.Unit.YEARS),
+                    Arguments.of("MON/5", CronExpressionUtil.Unit.DAY_OF_WEEK)
             );
         }
 
@@ -179,7 +192,9 @@ class CronExpressionUtilTest {
                     Arguments.of("0-4", CronExpressionUtil.Unit.HOURS, HashSet.of(0, 1, 2, 3, 4).toSortedSet()),
                     Arguments.of("30-31", CronExpressionUtil.Unit.DAY_OF_MONTH, HashSet.of(30, 31).toSortedSet()),
                     Arguments.of("1-2", CronExpressionUtil.Unit.MONTHS, HashSet.of(1, 2).toSortedSet()),
-                    Arguments.of("7-7", CronExpressionUtil.Unit.DAY_OF_WEEK, HashSet.of(7).toSortedSet())
+                    Arguments.of("7-7", CronExpressionUtil.Unit.DAY_OF_WEEK, HashSet.of(7).toSortedSet()),
+                    Arguments.of("1998-2000", CronExpressionUtil.Unit.YEARS, HashSet.of(1998, 1999, 2000).toSortedSet()),
+                    Arguments.of("FRI-SUN", CronExpressionUtil.Unit.DAY_OF_WEEK, HashSet.of(5, 6, 7).toSortedSet())
             );
         }
 
@@ -205,7 +220,9 @@ class CronExpressionUtilTest {
                     Arguments.of("-20-3", CronExpressionUtil.Unit.MONTHS),
                     Arguments.of("8-8", CronExpressionUtil.Unit.DAY_OF_WEEK),
                     Arguments.of("a-g", CronExpressionUtil.Unit.DAY_OF_WEEK),
-                    Arguments.of("5-g", CronExpressionUtil.Unit.DAY_OF_WEEK)
+                    Arguments.of("5-g", CronExpressionUtil.Unit.DAY_OF_WEEK),
+                    Arguments.of("1990-g", CronExpressionUtil.Unit.YEARS),
+                    Arguments.of("MON-z", CronExpressionUtil.Unit.DAY_OF_WEEK)
             );
         }
 
@@ -251,6 +268,14 @@ class CronExpressionUtilTest {
                     Arguments.of(
                             "1-5,7", CronExpressionUtil.Unit.DAY_OF_WEEK,
                             HashSet.of(1, 2, 3, 4, 5, 7)
+                    ),
+                    Arguments.of(
+                            "1992,1994-1996", CronExpressionUtil.Unit.YEARS,
+                            HashSet.of(1992, 1994, 1995, 1996)
+                    ),
+                    Arguments.of(
+                            "MON,THU,SAT-SUN", CronExpressionUtil.Unit.DAY_OF_WEEK,
+                            HashSet.of(1, 4, 6, 7)
                     )
             );
         }
@@ -277,7 +302,9 @@ class CronExpressionUtilTest {
                     Arguments.of("-10--5", CronExpressionUtil.Unit.MONTHS),
                     Arguments.of("10,1-2,7", CronExpressionUtil.Unit.DAY_OF_WEEK),
                     Arguments.of("3,", CronExpressionUtil.Unit.DAY_OF_WEEK),
-                    Arguments.of(",3", CronExpressionUtil.Unit.DAY_OF_WEEK)
+                    Arguments.of(",3", CronExpressionUtil.Unit.DAY_OF_WEEK),
+                    Arguments.of(",1996", CronExpressionUtil.Unit.YEARS),
+                    Arguments.of(",MON", CronExpressionUtil.Unit.DAY_OF_WEEK)
             );
         }
 
